@@ -90,7 +90,62 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Set to true if you have a Nerd Font installed
+-- Adds arrow key remaps to suite hrm
+vim.cmd [[
+    nnoremap h ;
+
+    nnoremap j h
+    nnoremap k j
+    nnoremap l k
+    nnoremap ; l
+
+    " nnoremap <C-j> <C-h>
+    " nnoremap <C-k> <C-j>
+    " nnoremap <C-l> <C-k>
+    " nnoremap <C-;> <C-l>
+
+    vnoremap j h
+    vnoremap k j
+    vnoremap l k
+    vnoremap ; l
+]]
+
+-- vim.keymap.set('c', '<C-j>', '<C-h>')
+-- vim.keymap.set('c', '<C-k>', '<C-j>')
+-- vim.keymap.set('c', '<C-l>', '<C-k>')
+-- vim.keymap.set('c', '<C-;>', '<C-l>')
+
+-- primeagen remaps
+-- sets it to return to netrw (project view) view
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+-- moves visual lines with capital K and L
+vim.keymap.set('v', 'K', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'L', ":m '<-2<CR>gv=gv")
+
+-- keeps your cursor at the same place after appending line below
+vim.keymap.set('n', 'J', 'mzJ`z')
+-- keeps c-d and c-u centered
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+-- allows search terms to say centered
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+-- greatest remap ever
+vim.keymap.set('x', '<leader>p', [["_dP]])
+
+-- next greatest remap ever : asbjornHaland
+-- these do things around system clipboard
+vim.keymap.set('n', '<leader>y', [["+y]])
+vim.keymap.set('v', '<leader>y', [["+y]])
+vim.keymap.set('n', '<leader>Y', [["+Y]])
+-- vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
+
+-- allows you to replace whatever word you're already on
+vim.keymap.set('n', '<leader>l', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Rep[L]aces the word currently on' })
+
+-- turns current file to an executable
+vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true }) -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
@@ -102,7 +157,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -192,10 +247,14 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+-- Commands that run automatically after an event
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
+--  TextYankPost is the event to listen to
+--  Group is to prevent calling the event twice
+--  Callback, after the event's happened then execute this code
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
@@ -206,6 +265,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
+-- Installs lazy if not installed on machine yet
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
